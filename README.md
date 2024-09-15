@@ -1,4 +1,3 @@
-Script Name: 
 Programmer: jathin yarra
 Language: bash script
 Version: 4.4.20
@@ -9,7 +8,7 @@ Description : Write a shell script (file extension .sh) that will independently 
 Required Software :
 Bash: The script is written for a Bash-compatible shell.
 wget: For downloading files from the web.
-gunzip: For unzipping `.gz` files.
+gunzip: For unzipping.
 head: For extracting the first 10 lines of a file.
 wc: For counting the number of lines in a file.
 touch: command used for creating empty files
