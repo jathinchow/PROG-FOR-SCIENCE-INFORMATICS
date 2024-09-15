@@ -19,6 +19,9 @@ Ensure Prerequisites: Make sure you have Bash, `wget`, `gunzip`, `head`, and `wc
 Download the Script: Save the script `introduction to Unix.sh` to your local machine.
 
 Make the Script Executable.
-
 Run the Script:
 ./introduction to Unix.sh
+
+files created:
+Informatics_573: Directory created in the user's home directory.
+data_summary.txt: A summary file that provides detailed information about the downloaded files, including the first 10 lines of each file and the total line count for each file.
