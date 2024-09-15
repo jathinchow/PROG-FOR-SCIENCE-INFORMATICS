@@ -16,10 +16,9 @@ touch: command used for creating empty files
 Usage Instructions :
 Ensure Prerequisites: Make sure you have Bash, `wget`, `gunzip`, `head`, and `wc` installed on your system.
 
-Download the Script: Save the script `download_and_process.sh` to your local machine.
+Download the Script: Save the script `introduction to Unix.sh` to your local machine.
 
 Make the Script Executable.
 
 Run the Script:
-./download_and_process.sh
-
+./introduction to Unix.sh
