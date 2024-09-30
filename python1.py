@@ -50,54 +50,44 @@ f"A: {counts[0]}, C: {counts[1]}, G: {counts[2]}, T: {counts[3]}")
 
 
 ## QUESTION 4
+# To count nucleotides from part 3
 def count_nucleotides_by_kilobase(sequence):
-"""Counts nucleotides in each kilobase (1000 base pairs) of the sequence."""
+# Counts nucleotides in each kilobase (1000 base pairs) of the sequence
 nucleotide_counts = {}
 kilobase_size = 1000
-    
 # Iterate over the sequence in chunks of kilobases
 for i in range(0, len(sequence), kilobase_size):
 # Slice the sequence for the current kilobase
 kilobase = sequence[i:i + kilobase_size]
 # Initialize count for this kilobase
-counts = {'A': 0, 'C': 0, 'G': 0, 'T': 0}
-        
+counts = {'A': 0, 'C': 0, 'G': 0, 'T': 0}   
 # Count nucleotides in the current kilobase
 for nucleotide in kilobase:
 if nucleotide in counts:
-counts[nucleotide] += 1
-        
+counts[nucleotide] += 1       
 # Store the counts in the dictionary
-nucleotide_counts[i // kilobase_size] = counts
-    
+nucleotide_counts[i // kilobase_size] = counts   
 return nucleotide_counts
-
 # Sample sequence for demonstration (replace this with actual DNA sequence)
 #sequence = "A" * 500 + "C" * 250 + "G" * 200 + "T" * 50  # Example sequence
-
 # To read dictionary from the count function
 nucleotide_counts = count_nucleotides_by_kilobase(sequence)
-
 # To create a list with 4 elements for the first 1000 base pairs
 first_kb_counts = [nucleotide_counts[0]['A'], nucleotide_counts[0]['C'], nucleotide_counts[0]['G'], nucleotide_counts[0]['T']]
 print("Nucleotide counts in the first 1000 base pairs:", first_kb_counts)
-
 # To repeat for each kilobase and create a list of lists
 all_kb_counts = []
 # Iterate over the sequence in steps of 1000 bases
 for kb_start, counts in nucleotide_counts.items():
 # Append the counts to the list of all kilobase counts
 all_kb_counts.append([counts['A'], counts['C'], counts['G'], counts['T']])
-
 # Calculate the sum of nucleotide counts for each kilobase
 expected_sum = 1000  # Define the expected sum
 sums = [sum(kb) for kb in all_kb_counts]
 print("Sums of nucleotide counts for each kilobase:", sums)
-
 # To identify kilobases with sums not equal to the expected value
 differences = [i for i, s in enumerate(sums) if s != expected_sum]
 print("Kilobases with sums not equal to", expected_sum, ":", differences)
-
 # To check if there are any discrepancies
 if differences:
     print("The differences are likely due to the fact that the sequence is not perfectly divided into kilobases.")
