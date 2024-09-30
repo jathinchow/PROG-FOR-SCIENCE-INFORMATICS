@@ -2,7 +2,7 @@ Programmer: jathin yarra
 
 Language: Python
 
-script:3.10 64 bits
+script: 3.10 64 bits
 
 Date Submitted: September 28, 2024.
 
