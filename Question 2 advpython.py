@@ -48,3 +48,10 @@ plt.title('Clustermap of Gene Expression (Sampled)')  # Set the title of the plo
 plt.show()  #Display the clustermap
 
 2G
+Chromosome Distribution of DEGs: Histograms illustrate that DEGs are not precisely uniformly distributed across chromosomes.
+Some chromosomes bear an exceptionally higher number of DEGs and may indicate that these chromosomes are more active in biological processes for this disease.
+Distribution of DEGs by Sample Type: Segregation based on sample type, Normal and Tumor, shows a rather noticeable distribution in the DEGs. Most of the DEG frequencies are higher on the particular chromosome in most of the tumor samples, 
+which may raise suspicion for possible chromosomal hotspots related to tumorigenesis. Upregulated vs. Downregulated Genes in Tumor Samples: The bar chart showing upregulated versus downregulated genes in tumor samples reflects that the majority of DEGs are upregulated, reflecting active overexpression in tumor cells.
+However, it contrastingly suggests that genes expressing downregulation may be suppressed during tumorigenesis. Patterns in Gene Expressions: Overall, a cluster of samples sharing similar expression profiles was depicted as a heatmap by sample for gene expression patterns. 
+This may suggest biological coherence among the samples comprising it and perhaps point toward tumor subtypes. Clustering Analysis: The current cluster map provides a further fine-tuning of the information from the heat map by clustering both samples and genes that share a similar expression profile,
+hence aiding in the determination of gene interactions and co-expression in the samples. This clustering might, thus, identify gene networks that could be implicated in tumorigenesis. 
