@@ -1,0 +1,117 @@
+## Question-1
+# Set the file path to your sequence file
+file_path <- "C:/Users/Public/chr1_GL383518v1_alt.fa"
+
+# Read the sequence file, skipping the first line in FASTA files
+sequence_lines <- readLines(file_path)[-1]
+
+# Concatenate all lines into a single string for the complete DNA sequence
+sequence <- paste(sequence_lines, collapse = "")
+
+# Print the 10th letter of the sequence
+cat("10th letter of the sequence:", substr(sequence, 10, 10), "\n")
+
+# Print the 758th letter of the sequence
+cat("758th letter of the sequence:", substr(sequence, 758, 758), "\n")
+
+
+## Question 2
+# Set file path
+file_path <- "C:/Users/Public/chr1_GL383518v1_alt.fa"
+
+# Read and process sequence (remove header, combine lines, convert to uppercase)
+sequence <- toupper(paste(readLines(file_path, warn = FALSE)[-1], collapse = ""))
+
+# Generate reverse complement
+reverse_complement <- paste(rev(strsplit(chartr("ATCG", "TAGC", sequence), NULL)[[1]]), collapse = "")
+
+# Print 79th letter and letters from 500th to 800th positions
+cat("79th letter of the reverse complement:", substring(reverse_complement, 79, 79), "\n")
+cat("500th to 800th letters of the reverse complement:\n", substring(reverse_complement, 500, 800), "\n")
+
+
+## Question 3
+# Set file path
+file_path <- "C:/Users/Public/chr1_GL383518v1_alt.fa"
+
+# Read and process sequence (remove header lines)
+sequence <- paste(readLines(file_path)[!grepl("^>", readLines(file_path))], collapse = "")
+
+# Calculate chunks and count nucleotides for each kilobase segment
+counts_list <- lapply(1:ceiling(nchar(sequence) / 1000), function(i) 
+  table(factor(strsplit(substr(sequence, (i-1) * 1000 + 1, min(i * 1000, nchar(sequence))), "")[[1]], levels = c("A", "C", "G", "T")))
+)
+
+# Name each element of the list based on the chunk number and display counts
+names(counts_list) <- paste0("Kilobase_", seq_along(counts_list))
+counts_list
+
+
+## Question 4
+# Question 4a
+
+# Read and process sequence (remove header lines)
+sequence <- paste(readLines(file_path)[!grepl("^>", readLines(file_path))], collapse = "")
+
+# Calculate chunks and count nucleotides for each kilobase segment
+counts_list <- lapply(1:ceiling(nchar(sequence) / 1000), function(i) 
+  table(factor(strsplit(substr(sequence, (i-1) * 1000 + 1, min(i * 1000, nchar(sequence))), "")[[1]], levels = c("A", "C", "G", "T")))
+)
+
+# Name each element of the list based on the chunk number and display counts
+names(counts_list) <- paste0("Kilobase_", seq_along(counts_list))
+counts_list
+
+
+#Question 4b
+# Create data frame with counts for each kilobase
+kilobase_df <- do.call(rbind, lapply(seq_along(counts_list), function(i) {
+  data.frame(Kilobase = paste0("Kilobase_", i), t(counts_list[[i]][c("A", "C", "G", "T")]))
+}))
+
+# Display the data frame
+print(kilobase_df)
+
+
+#Question 4c
+# Create combined data frame for counts across kilobases
+combined_df <- do.call(rbind, lapply(seq_along(counts_list), function(i) {
+  data.frame(Kilobase = paste0("Kilobase_", i), t(as.numeric(counts_list[[i]][c("A", "C", "G", "T")])))
+}))
+
+# Display the data frame
+print(combined_df)
+
+
+#Question 4d
+# Add total counts column and print data frame
+combined_df$Total <- rowSums(combined_df[, c("A", "C", "G", "T")])
+options(max.print = nrow(combined_df) * ncol(combined_df))
+print(combined_df, row.names = FALSE)
+
+
+#Question 4e
+## 1
+
+# Set expected sum per kilobase
+expected_sum <- 1000
+
+## 2
+
+# Identify and print kilobases with sums differing from 1000
+discrepant_rows <- combined_df[combined_df$Total != 1000, ]
+if (nrow(discrepant_rows) > 0) {
+  cat("Kilobases with sums differing from 1000:\n")
+  print(discrepant_rows)
+} else {
+  cat("All kilobase sums match 1000.\n")
+}
+
+
+##3
+If you find that some observed sums do not agree with the expected values, some of the following factors could account for these differences:
+Data Quality Problems: Errors in the collection or processing of the data can cause incorrect counts. This includes miscounts, missing values, or incorrect data entry.
+Biological Variability: Nucleotide composition can vary extensively between different biological samples. If the samples are heterogeneous, it can lead to deviations from expected counts.
+Sampling Bias: Non-random or biased sampling methods may skew the data, leading to unexpected results.
+Technical Artifacts: Some biases can be introduced by the sequencing technologies themselves. For example, errors from sequencing or PCR amplification can result in overrepresentation of some nucleotides.
+Normalization Errors: If the data were not normalized properly, it would induce spurious inflation or deflation of the counts for some nucleotides, which might lead to discrepancies in the results obtained.
