@@ -64,13 +64,23 @@ counts_list
 
 
 #Question 4b
-# Create data frame with counts for each kilobase
-kilobase_df <- do.call(rbind, lapply(seq_along(counts_list), function(i) {
-  data.frame(Kilobase = paste0("Kilobase_", i), t(counts_list[[i]][c("A", "C", "G", "T")]))
-}))
+# Initialize a data frame to hold counts for each kilobase
+# Use lapply to iterate over each element in counts_list and create a data frame for each kilobase
+kilobase_df <- do.call(rbind, lapply(1:length(counts_list), function(i) {
+  counts <- counts_list[[i]]  # Get counts for the current kilobase
 
-# Display the data frame
+# Create a data frame for the current kilobase with nucleotide counts
+  data.frame(
+    Kilobase = paste0("Kilobase_", i),
+    A = counts["A"],
+    C = counts["C"],
+    G = counts["G"],
+    T = counts["T"]
+  )
+}))
+# Display the resulting data frame
 print(kilobase_df)
+
 
 
 #Question 4c
@@ -84,9 +94,13 @@ print(combined_df)
 
 
 #Question 4d
-# Add total counts column and print data frame
+# Calculate the sum of each row and add it as a new column to the data frame
 combined_df$Total <- rowSums(combined_df[, c("A", "C", "G", "T")])
+
+# Adjust the max.print option dynamically based on the size of the data frame
 options(max.print = nrow(combined_df) * ncol(combined_df))
+
+# Print the entire data frame without truncation
 print(combined_df, row.names = FALSE)
 
 
