@@ -31,7 +31,7 @@ Requirements
 4. Creating and Analyzing Data Frames
    - Create a data frame for the first kilobase, showing counts for each nucleotide.
    - Repeat this operation for all kilobases and compile the results.
-   - Create a new row in the data frame for each kilobase's counts.
+   - Create a new row in the data frame for each kilobases counts.
    - Calculate and display the sum of each row.
 
 5. Analysis and Explanation of Results
