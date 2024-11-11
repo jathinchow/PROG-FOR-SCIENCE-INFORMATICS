@@ -6,7 +6,7 @@ Language: R
 
 script: "R version 4.4.1 bits"
 
-Date Submitted: September 28, 2024.
+Date Submitted: November 10, 2024.
 
 Description This program performs various analyses on a DNA sequence from the file chr1_GL383518v1_alt.txt. It includes reading the sequence, generating the reverse complement, and analyzing nucleotide frequencies.
 
