@@ -1,3 +1,5 @@
+# QUESTION 1
+
 # Load necessary libraries
 library(openxlsx) # For reading Excel files
 library(dplyr)    # For data manipulation
