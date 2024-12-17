@@ -1,0 +1,132 @@
+import pandas as pd
+import math
+import matplotlib.pyplot as plt
+from Bio import Entrez, SeqIO
+from Bio.SeqUtils import MeltingTemp
+
+# Set Entrez Email (essential for NCBI access)
+Entrez.email = "jathin.yarra@gmail.com"
+
+def search_ncbi_database(search_term, max_results=1):
+    """Search NCBI for nucleotide entries based on user input."""
+    try:
+        print(f"\n🔍 Searching NCBI Database for: '{search_term}'...")
+        with Entrez.esearch(db="nucleotide", term=search_term, retmax=max_results) as search_handle:
+            search_results = Entrez.read(search_handle)
+        return search_results["IdList"]
+    except Exception as e:
+        print(f"❌ Error during search: {e}")
+        return []
+
+def fetch_dna_sequence(genbank_id):
+    """Retrieve the DNA sequence from NCBI using a GenBank ID."""
+    try:
+        print(f"📥 Fetching sequence for GenBank ID: {genbank_id}")
+        with Entrez.efetch(db="nucleotide", id=genbank_id, rettype="fasta", retmode="text") as handle:
+            record = SeqIO.read(handle, "fasta")
+            return str(record.seq)
+    except Exception as e:
+        print(f"❌ Failed to fetch sequence: {e}")
+        return None
+
+def calculate_gc_percentage(sequence):
+    """Calculate GC content as a percentage."""
+    sequence = sequence.upper()
+    return (sequence.count('G') + sequence.count('C')) / len(sequence) * 100
+
+def calculate_at_percentage(sequence):
+    """Calculate AT content as a percentage."""
+    sequence = sequence.upper()
+    return (sequence.count('A') + sequence.count('T')) / len(sequence) * 100
+
+def calculate_nucleotide_counts(sequence):
+    """Calculate counts of A, T, G, C in the sequence."""
+    sequence = sequence.upper()
+    return sequence.count('A'), sequence.count('T'), sequence.count('G'), sequence.count('C')
+
+def calculate_shannon_entropy(sequence):
+    """Calculate Shannon Entropy to measure sequence complexity."""
+    total_length = len(sequence)
+    if total_length == 0:
+        return 0.0  # No entropy for an empty sequence
+    frequencies = {base: sequence.count(base) / total_length for base in "ATGC"}
+    return -sum(freq * math.log2(freq) for freq in frequencies.values() if freq > 0)
+
+def save_to_csv(results, filename="personalized_sequence_results.csv"):
+    """Save the analysis results to a CSV file."""
+    try:
+        df = pd.DataFrame(results)
+        df.to_csv(filename, index=False)
+        print(f"\n✅ Results saved to '{filename}'.")
+    except Exception as e:
+        print(f"❌ Error saving results: {e}")
+
+def create_analysis_plots(results):
+    """Generates bar plots for GC Content, Shannon Entropy, and AT Content."""
+    df = pd.DataFrame(results)
+    plt.figure(figsize=(10, 6))
+    plt.bar(df["GenBank ID"], df["GC Content (%)"], label="GC Content")
+    plt.bar(df["GenBank ID"], df["AT Content (%)"], label="AT Content", alpha=0.7)
+    plt.xlabel("GenBank ID")
+    plt.ylabel("Content (%)")
+    plt.title("GC and AT Content Analysis")
+    plt.legend()
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.savefig("gc_at_content_chart.png")
+    plt.show()
+
+    plt.figure(figsize=(10, 6))
+    plt.bar(df["GenBank ID"], df["Shannon Entropy"], color="orange")
+    plt.xlabel("GenBank ID")
+    plt.ylabel("Entropy")
+    plt.title("Shannon Entropy Analysis")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.savefig("shannon_entropy_chart.png")
+    plt.show()
+
+if __name__ == "__main__":
+    print("🚀 Welcome to NCBI Sequence Analyzer!")
+    queries = input("📝 Enter search terms or GenBank IDs (comma-separated): ").split(",")
+    max_results = int(input("🔢 How many results per query? "))
+
+    analysis_results = []
+    for search_term in queries:
+        genbank_ids = search_ncbi_database(search_term, max_results)
+        if not genbank_ids:
+            print(f"❗ No results found for '{search_term}'. Moving on...")
+            continue
+        for genbank_id in genbank_ids:
+            dna_sequence = fetch_dna_sequence(genbank_id)
+            if dna_sequence:
+                gc_content = calculate_gc_percentage(dna_sequence)
+                at_content = calculate_at_percentage(dna_sequence)
+                a_count, t_count, g_count, c_count = calculate_nucleotide_counts(dna_sequence)
+                shannon_entropy = calculate_shannon_entropy(dna_sequence)
+                sequence_length = len(dna_sequence)
+                print(f"\n🧬 Results for GenBank ID: {genbank_id}")
+                print(f"   - A Count: {a_count}")
+                print(f"   - T Count: {t_count}")
+                print(f"   - G Count: {g_count}")
+                print(f"   - C Count: {c_count}")
+                print(f"   - GC Content: {round(gc_content, 2)}%")
+                print(f"   - AT Content: {round(at_content, 2)}%")
+                print(f"   - Shannon Entropy: {round(shannon_entropy, 4)}")
+                print(f"   - Sequence Length: {sequence_length} bases")
+                analysis_results.append({
+                    "GenBank ID": genbank_id,
+                    "A Count": a_count,
+                    "T Count": t_count,
+                    "G Count": g_count,
+                    "C Count": c_count,
+                    "GC Content (%)": round(gc_content, 2),
+                    "AT Content (%)": round(at_content, 2),
+                    "Shannon Entropy": round(shannon_entropy, 4),
+                    "Sequence Length (bp)": sequence_length
+                })
+    if analysis_results:
+        save_to_csv(analysis_results)
+        create_analysis_plots(analysis_results)
+    else:
+        print("❗ No valid results to process. Please check your input.")
